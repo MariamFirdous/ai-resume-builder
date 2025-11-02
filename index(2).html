@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeCraft - AI Resume Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: white;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #fff 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            opacity: 0.95;
+        }
+
+        .hero .tagline {
+            font-size: 1.1em;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin: 20px 5px;
+            font-size: 0.9em;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            animation: fadeIn 1s ease;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+
+        .card-header h2 {
+            font-size: 1.8em;
+            color: #1e3c72;
+            font-weight: 700;
+        }
+
+        .icon {
+            font-size: 1.8em;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-section label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1e3c72;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .prompt-box {
+            width: 100%;
+            min-height: 400px;
+            padding: 18px;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .prompt-box:focus {
+            outline: none;
+            border-color: #7e22ce;
+            box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.1);
+        }
+
+        .helper-text {
+            font-size: 0.85em;
+            color: #6b7280;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7e22ce 0%, #1e3c72 100%);
+            color: white;
+            width: 100%;
+            justify-content: center;
+            font-size: 18px;
+            padding: 18px;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(126, 34, 206, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+        }
+
+        #resumePreview {
+            background: #fafafa;
+            padding: 50px;
+            border-radius: 12px;
+            min-height: 700px;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .resume-header {
+            text-align: center;
+            border-bottom: 3px solid #1e3c72;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .resume-header h1 {
+            color: #1e3c72;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .resume-header .contact-info {
+            color: #4b5563;
+            font-size: 0.95em;
+        }
+
+        .resume-section {
+            margin-bottom: 25px;
+        }
+
+        .resume-section h2 {
+            color: #1e3c72;
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-left: 4px solid #7e22ce;
+            padding-left: 12px;
+        }
+
+        .resume-section p, .resume-section ul {
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .resume-section ul {
+            padding-left: 20px;
+        }
+
+        .resume-section li {
+            margin-bottom: 6px;
+        }
+
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #7e22ce 0%, #1e3c72 100%);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #9ca3af;
+            padding: 100px 20px;
+        }
+
+        .empty-state h3 {
+            color: #6b7280;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px 60px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #7e22ce;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .example-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .example-section h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .example-section button {
+            background: #7e22ce;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .example-section button:hover {
+            background: #6b21a8;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            
+            #resumePreview {
+                padding: 30px;
+            }
+        }
+
+        .strength-meter {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .strength-meter h4 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .meter-bar {
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #10b981 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .meter-label {
+            font-size: 0.9em;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>✨ ResumeCraft</h1>
+        <p class="subtitle">Build ATS-Perfect Resumes with AI</p>
+        <p class="tagline">"Your Prompt. Your Resume. Recruiter Ready."</p>
+        <div>
+            <span class="badge">🤖 AI-Powered</span>
+            <span class="badge">📄 ATS-Compliant</span>
+            <span class="badge">⚡ Instant Generation</span>
+            <span class="badge">✅ One-Page Format</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-grid">
+            <!-- Input Section -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="icon">💬</span>
+                    <h2>Tell Us About Yourself</h2>
+                </div>
+
+                <div class="example-section">
+                    <h3>🎯 Need help getting started?</h3>
+                    <p style="font-size: 0.9em; color: #4b5563; margin-top: 8px;">
+                        Click below to see an example prompt
+                    </p>
+                    <button onclick="fillExamplePrompt()">Use Example Prompt</button>
+                </div>
+
+                <div class="input-section">
+                    <label for="promptInput">Enter Your Details in Natural Language</label>
+                    <textarea 
+                        id="promptInput" 
+                        class="prompt-box"
+                        placeholder="Example:
+
+Hi, my name is Riya Sharma and I'm currently pursuing a B.Tech in Computer Science and Engineering from Manipal Institute of Technology. I'm in my pre-final year and have maintained a CGPA of 8.7 so far. I'm really passionate about software development and I'm looking for a Software Engineering Internship.
+
+I've worked with technologies like Python, Java, C++, Node.js, Express.js, React.js, MySQL and MongoDB. I'm comfortable with Git, Postman, and Figma.
+
+I completed a summer internship at InnovateTech Solutions from May to July 2024, where I built REST APIs supporting 10,000+ daily active users and optimized backend to reduce API response time by 25%...
+
+[Continue with your projects, achievements, and positions of responsibility]"
+                    ></textarea>
+                    <p class="helper-text">
+                        💡 Include: Name, Education, Skills, Experience, Projects, Achievements, Target Role
+                    </p>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateResume()">
+                    <span>🚀</span>
+                    Generate ATS-Perfect Resume
+                </button>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="icon">👁️</span>
+                    <h2>Resume Preview</h2>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="downloadPDF()">
+                        <span>📥</span>
+                        Download PDF
+                    </button>
+                    <button class="btn btn-secondary" onclick="copyToClipboard()">
+                        <span>📋</span>
+                        Copy Text
+                    </button>
+                </div>
+
+                <div id="strengthMeter" style="display: none;" class="strength-meter">
+                    <h4>📊 Resume Strength Score</h4>
+                    <div class="meter-bar">
+                        <div class="meter-fill" id="meterFill" style="width: 0%"></div>
+                    </div>
+                    <p class="meter-label" id="meterLabel">Analyzing...</p>
+                </div>
+
+                <div id="resumePreview">
+                    <div class="empty-state">
+                        <h3>📝 Your Resume Appears Here</h3>
+                        <p>Enter your details and click "Generate Resume" to see your professionally formatted, ATS-compliant resume</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h3 style="color: #1e3c72; margin-bottom: 10px;">🤖 AI is Crafting Your Resume</h3>
+            <p style="color: #6b7280;">Analyzing your profile and optimizing for ATS...</p>
+        </div>
+    </div>
+
+    <script>
+        const examplePrompt = `Hi, my name is Riya Sharma and I'm currently pursuing a B.Tech in Computer Science and Engineering from Manipal Institute of Technology. I'm in my pre-final year and have maintained a CGPA of 8.7 so far. I'm really passionate about software development and I'm looking for a Software Engineering Internship — ideally something in backend or full-stack development.
+
+Over the past year, I've worked with technologies like Python, Java, and C++. I enjoy building products using Node.js, Express.js, React.js, and have good experience with databases like MySQL and MongoDB. I'm also comfortable with Git, Postman, and Figma, and I have a strong foundation in Data Structures and Algorithms.
+
+I completed a summer internship at InnovateTech Solutions from May to July 2024. During my internship, I worked on building REST APIs that supported over 10,000 daily active users. I also helped optimize the backend to reduce API response time by 25%. I was part of a team of five engineers, and we worked in an agile environment with multiple sprints. I also wrote unit tests with Jest and achieved 90% code coverage.
+
+In addition to my internship, I've built a couple of projects I'm really proud of. One of them is called "SkillTrack," a full-stack web app that helps students track their learning progress. I built it using React.js and Node.js and also implemented secure authentication with JWT. The app loads in less than a second and is deployed on Vercel. Another project I worked on is "Smart Resume Parser," which uses Python and NLP (Spacy) to extract structured data like skills, education, and contact info from resumes. It achieved around 92% parsing accuracy on a dataset of 500 resumes.
+
+Some of my notable achievements include winning 1st place at the MIT Hackathon 2024 among 250+ participants. I also rank in the top 5% of LeetCode contests with a max rating of 1840, and I cleared the Google STEP Coding Challenge earlier this year. I'm also actively involved on campus as a Core Member of the Coding Club, where I lead weekly DSA sessions for 100+ students, and I've mentored juniors during hackathons as well.
+
+Overall, I'm a detail-oriented developer who loves building scalable systems, solving real-world problems through code, and working in collaborative environments. I'm eager to learn from experienced engineers and contribute meaningfully to the team I work with.`;
+
+        function fillExamplePrompt() {
+            document.getElementById('promptInput').value = examplePrompt;
+        }
+
+        function parsePrompt(prompt) {
+            const data = {
+                name: '',
+                email: '',
+                phone: '',
+                linkedin: '',
+                summary: '',
+                education: [],
+                skills: [],
+                experience: [],
+                projects: [],
+                achievements: []
+            };
+
+            // Extract name
+            const nameMatch = prompt.match(/(?:my name is|I'm|I am)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)/i);
+            if (nameMatch) data.name = nameMatch[1];
+
+            // Generate email from name
+            if (data.name) {
+                data.email = data.name.toLowerCase().replace(/\s+/g, '.') + '@example.com';
+            }
+
+            // Extract education
+            const educationMatch = prompt.match(/(?:pursuing|completed|studying)\s+(?:a\s+)?([^.]+?(?:B\.Tech|M\.Tech|B\.E\.|M\.E\.|Bachelor|Master)[^.]+)/i);
+            if (educationMatch) {
+                data.education.push(educationMatch[1].trim());
+            }
+
+            // Extract CGPA
+            const cgpaMatch = prompt.match(/CGPA[:\s]+(\d+\.?\d*)/i);
+            if (cgpaMatch && data.education.length > 0) {
+                data.education[0] += ` | CGPA: ${cgpaMatch[1]}`;
+            }
+
+            // Extract skills
+            const skillsSection = prompt.match(/(?:technologies|skills|worked with|experience with)[^.]*?(?:like|including|such as)[:\s]+([^.]+)/gi);
+            if (skillsSection) {
+                skillsSection.forEach(section => {
+                    const skills = section.match(/(?:Python|Java|C\+\+|JavaScript|Node\.js|React\.js|Express\.js|MongoDB|MySQL|Git|Postman|Figma|HTML|CSS|Docker|AWS|Data Structures|Algorithms|NLP|Spacy|JWT)/gi);
+                    if (skills) {
+                        skills.forEach(skill => {
+                            if (!data.skills.includes(skill)) {
+                                data.skills.push(skill);
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Extract internship/experience
+            const expMatch = prompt.match(/(?:internship|worked|experience)\s+at\s+([^.]+?)(?:from|during)[^.]+?\.(?:[^.]+\.){0,3}/gi);
+            if (expMatch) {
+                expMatch.forEach(exp => {
+                    data.experience.push(exp.trim());
+                });
+            }
+
+            // Extract projects
+            const projectMatches = prompt.match(/(?:project|built|developed|created)[^.]*?["']([^"']+)["'][^.]*?\.(?:[^.]+\.){0,2}/gi);
+            if (projectMatches) {
+                projectMatches.forEach(proj => {
+                    data.projects.push(proj.trim());
+                });
+            }
+
+            // Extract achievements
+            const achievementMatches = prompt.match(/(?:won|winning|achieved|rank|cleared|selected)[^.]+\./gi);
+            if (achievementMatches) {
+                achievementMatches.forEach(ach => {
+                    data.achievements.push(ach.trim());
+                });
+            }
+
+            // Generate professional summary
+            const roleMatch = prompt.match(/looking for (?:a |an )?([^.]+?)(?:internship|position|role)/i);
+            const targetRole = roleMatch ? roleMatch[1].trim() : 'Software Development';
+            
+            data.summary = `Detail-oriented ${targetRole} enthusiast with strong foundation in full-stack development and problem-solving. Passionate about building scalable systems and contributing to innovative projects in collaborative environments.`;
+
+            return data;
+        }
+
+        function generateResume() {
+            const prompt = document.getElementById('promptInput').value.trim();
+            
+            if (!prompt) {
+                alert('Please enter your details in the prompt box');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loadingOverlay').classList.add('active');
+
+            // Simulate AI processing
+            setTimeout(() => {
+                const data = parsePrompt(prompt);
+                const resumeHTML = buildResumeHTML(data);
+                document.getElementById('resumePreview').innerHTML = resumeHTML;
+                
+                // Show and animate strength meter
+                showStrengthMeter(data);
+                
+                document.getElementById('loadingOverlay').classList.remove('active');
+            }, 2000);
+        }
+
+        function buildResumeHTML(data) {
+            return `
+                <div class="resume-header">
+                    <h1>${data.name || 'Your Name'}</h1>
+                    <div class="contact-info">
+                        ${data.email || 'email@example.com'} ${data.phone ? '• ' + data.phone : ''} ${data.linkedin ? '• ' + data.linkedin : ''}
+                    </div>
+                </div>
+
+                ${data.summary ? `
+                <div class="resume-section">
+                    <h2>Professional Summary</h2>
+                    <p>${data.summary}</p>
+                </div>
+                ` : ''}
+
+                ${data.education.length > 0 ? `
+                <div class="resume-section">
+                    <h2>Education</h2>
+                    ${data.education.map(edu => `<p>• ${edu}</p>`).join('')}
+                </div>
+                ` : ''}
+
+                ${data.skills.length > 0 ? `
+                <div class="resume-section">
+                    <h2>Technical Skills</h2>
+                    <div class="skills-grid">
+                        ${data.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                    </div>
+                </div>
+                ` : ''}
+
+                ${data.experience.length > 0 ? `
+                <div class="resume-section">
+                    <h2>Experience</h2>
+                    ${data.experience.map(exp => `<p>${exp}</p>`).join('')}
+                </div>
+                ` : ''}
+
+                ${data.projects.length > 0 ? `
+                <div class="resume-section">
+                    <h2>Projects</h2>
+                    ${data.projects.map(proj => `<p>• ${proj}</p>`).join('')}
+                </div>
+                ` : ''}
+
+                ${data.achievements.length > 0 ? `
+                <div class="resume-section">
+                    <h2>Achievements</h2>
+                    ${data.achievements.map(ach => `<p>• ${ach}</p>`).join('')}
+                </div>
+                ` : ''}
+            `;
+        }
+
+        function showStrengthMeter(data) {
+            const meter = document.getElementById('strengthMeter');
+            const fill = document.getElementById('meterFill');
+            const label = document.getElementById('meterLabel');
+            
+            meter.style.display = 'block';
+            
+            // Calculate score based on data completeness
+            let score = 0;
+            if (data.name) score += 15;
+            if (data.email) score += 10;
+            if (data.summary) score += 15;
+            if (data.education.length > 0) score += 15;
+            if (data.skills.length >= 5) score += 20;
+            if (data.experience.length > 0) score += 15;
+            if (data.projects.length > 0) score += 10;
+            
+            setTimeout(() => {
+                fill.style.width = score + '%';
+                
+                let rating = 'Needs Improvement';
+                if (score >= 80) rating = 'Excellent - ATS Optimized! ✅';
+                else if (score >= 60) rating = 'Good - Minor improvements needed';
+                else if (score >= 40) rating = 'Fair - Add more details';
+                
+                label.textContent = `${score}% - ${rating}`;
+            }, 500);
+        }
+
+        function downloadPDF() {
+            const resumeContent = document.getElementById('resumePreview').innerHTML;
+            if (resumeContent.includes('empty-state')) {
+                alert('Please generate a resume first!');
+                return;
+            }
+            alert('PDF download functionality requires a backend service.\n\nFor now, you can:\n1. Press Ctrl/Cmd + P to print\n2. Select "Save as PDF" as the destination\n3. Save your resume!');
+            window.print();
+        }
+
+        function copyToClipboard() {
+            const resumeText = document.getElementById('resumePreview').innerText;
+            if (resumeText.includes('Your Resume Appears Here')) {
+                alert('Please generate a resume first!');
+                return;
+            }
+            navigator.clipboard.writeText(resumeText).then(() => {
+                alert('✅ Resume copied to clipboard!');
+            }).catch(() => {
+                alert('❌ Failed to copy text');
+            });
+        }
+    </script>
+</body>
+</html>
